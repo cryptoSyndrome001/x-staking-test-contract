@@ -3,6 +3,7 @@ use anchor_spl::token::{self,  Transfer, MintTo, Burn};
 use crate::*;
 use constants::*;
 use utils::*;
+use events::*;
 use errors::*;
 
 impl<'info> CreateTreasury<'info>{
@@ -15,6 +16,14 @@ impl<'info> CreateTreasury<'info>{
         treasury.treasury_vault = self.treasury_vault.key();
         treasury.pos_mint = self.pos_mint.key();
 
+        //@cryptoSyndrome
+        emit!(TreasuryCreated {
+            authority: self.authority.key(),
+            treasury: self.treasury.key(),
+            treasury_mint: self.treasury_mint.key(),
+            treasury_vault: self.treasury_vault.key(),
+            pos_mint: self.pos_mint.key()
+        });
         Ok(())
     }    
 }
@@ -55,6 +64,14 @@ impl<'info> Stake<'info>{
         };
         let cpi_ctx_pos = CpiContext::new_with_signer(cpi_program_pos, cpi_accounts_pos, signer);
         token::mint_to(cpi_ctx_pos, amount)?;
+
+        //@cryptoSyndrome
+        emit!(Deposited {
+            user: self.authority.key(),
+            treasury: self.treasury.key(),
+            treasury_mint: self.treasury.treasury_mint.key(),
+            deposit_amount: amount
+        });
 
         Ok(())
     }
@@ -97,6 +114,14 @@ impl<'info> Redeem<'info>{
         let cpi_program = self.token_program.to_account_info();
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
         token::transfer(cpi_ctx, amount)?;
+
+        //@cryptoSyndrome
+        emit!(Claimed {
+            user: self.authority.key(),
+            treasury: self.treasury.key(),
+            treasury_mint: self.treasury.treasury_mint.key(),
+            claim_amount: amount
+        });
 
         Ok(())
     }

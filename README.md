@@ -12,3 +12,7 @@ how to run local tests:
 yarn install
 anchor build
 anchor test
+
+## Answer
+1. Token account in which its token balance is changing did not set to mut in the redeem struct, so redeem transaction did not run.
+2. Completed the event struct and leave the log in the transaction, and parsed it to see the detail log data with web3.

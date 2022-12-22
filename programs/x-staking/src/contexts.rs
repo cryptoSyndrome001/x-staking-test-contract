@@ -100,14 +100,17 @@ pub struct Redeem<'info> {
     )]
     pub pos_mint: Box<Account<'info, Mint>>,
 
-    #[account(
+    // @cryptoSyndrome
+    #[account(mut, 
         seeds = [TREASURY_VAULT_TAG, treasury.key().as_ref()],
         bump
     )]
     pub treasury_vault: Box<Account<'info, TokenAccount>>,
-
+    // @cryptoSyndrome
+    #[account(mut)]
     pub user_vault: Box<Account<'info, TokenAccount>>,
-
+    // @cryptoSyndrome
+    #[account(mut)]
     pub user_pos_vault:Box<Account<'info, TokenAccount>>,
     
     pub authority: Signer<'info>,
